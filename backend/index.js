@@ -8,14 +8,20 @@ if(process.env.NODE_ENV !== 'production'){
   require('dotenv').config()
 }
 
-app.use(require('./routes/routes'))
-app.use(cors())
-app.use(myconn(mysql, {
+const con = mysql.createConnection({
   host: 'localhost',
-  port: 3306,
-  user: 'root',
-  password: 'Kennetu44$'
-}))
+  user: 'kennet',
+  password: 'Kennetu44$',
+  database: 'images'
+})
+
+con.connect(function(err){
+  if(err) throw err
+  else console.log('Database connection established')
+})
+
+app.use(cors()) 
+app.use(require('./routes/routes'))
 
 const port = process.env.PORT
 
