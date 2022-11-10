@@ -8,7 +8,7 @@ const fs = require('fs')
 const diskStorage = multer.diskStorage({
   destination: path.join(__dirname, '../images'),
   filename: (req, file, cb) => {
-    cb(null, Date.now() + '-monkeywit-' + file.originalname) //Nombre del archivo
+    cb(null, Date.now() + '-imageskdl-' + file.originalname) //Nombre del archivo
   }
 })
 
@@ -32,6 +32,27 @@ router.post('/images/post', fileUpload, (req, res) => {
     conn.query('INSERT INTO images_db.images_tbl set ?', [{type, name, data}], (err, rows) => {
       if (err) return res.status(500).send('Server Error')
       res.send('image saved!')
+    })
+
+  })
+  
+})
+
+router.get('/images/get', (req, res) => {
+
+  req.getConnection((err, conn) => {
+    if (err) return res.status(500).send('Server Error')
+
+    conn.query('SELECT * FROM images_db.images_tbl', (err, rows) => {
+      if (err) return res.status(500).send('Server Error')
+
+      rows.map(img => {
+        fs.writeFileSync(path.join(__dirname, '../dbimages/'+ img.id + '-imageskdl.png'), img.data)
+      })
+
+      const imagedir = fs.readdirSync(path.join(__dirname, '../dbimages/'))
+
+      res.json(imagedir)
     })
 
   })
