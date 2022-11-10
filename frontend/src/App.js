@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import { Box } from '@mui/material'
 import axios from 'axios'
 
 function App() {
