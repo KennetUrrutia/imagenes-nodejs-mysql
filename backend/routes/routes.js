@@ -25,19 +25,17 @@ router.post('/images/post', fileUpload, (req, res) => {
   req.getConnection((err, conn) => {
     if (err) return res.status(500).send('Server Error')
 
-    const type = req.fyle.mimetype
-    const name = req.file.originalname
+    const { mimetype: type, originalname: name} = req.file
+
     const data = fs.readFileSync(path.join(__dirname, '../images/' + req.file.filename))
 
-    conn.query('INSERT INTO image set ?', [{type, name, data}], (err, rows) => {
+    conn.query('INSERT INTO images_db.images_tbl set ?', [{type, name, data}], (err, rows) => {
       if (err) return res.status(500).send('Server Error')
       res.send('image saved!')
     })
 
   })
-
-  console.log(req.file)
-  res.send('image saved!')
+  
 })
 
 module.exports = router
